@@ -1,0 +1,6 @@
+Flask
+requests
+spotipy
+SpeechRecognition
+python-dotenv
+PyAudio

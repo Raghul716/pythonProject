@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spotify Voice Assistant</title>
+</head>
+<body>
+    <h1>Spotify Voice Assistant</h1>
+    <button onclick="startListening()">Speak</button>
+    <p id="status">Status: waiting</p>
+
+    <script>
+        function startListening() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                const voiceCommand = event.results[0][0].transcript;
+                console.log("Heard:", voiceCommand);
+
+                fetch(`/voice-command?command=${encodeURIComponent(voiceCommand)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById("status").innerText =
+                            `Status: ${data.status}, Track: ${data.track || "N/A"}`;
+                    });
+            };
+
+            recognition.onerror = function(event) {
+                document.getElementById("status").innerText = "Error recognizing speech.";
+            };
+        }
+    </script>
+</body>
+</html>
+
